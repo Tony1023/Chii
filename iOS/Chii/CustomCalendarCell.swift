@@ -12,13 +12,10 @@ import MKRingProgressView
 
 class CustomCalendarCell: JTAppleCell {
     
-    var date: Date! {
-        didSet { }
-    }
-    
     @IBOutlet weak var cellLabel: UILabel!
     
     @IBOutlet weak var rings: ProgressRingGroupView!
-    
+
+    @IBOutlet weak var monthLabel: UILabel!
     
 }

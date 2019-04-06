@@ -102,36 +102,54 @@
                                         <rect key="frame" x="0.0" y="40.666666666666686" width="375" height="644.33333333333326"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="AEZ-6o-RVf">
-                                            <size key="itemSize" width="160" height="144"/>
+                                            <size key="itemSize" width="160" height="146"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="CustomCalendarCell" id="A1o-Fx-quF" customClass="CustomCalendarCell" customModule="Chii" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="160" height="144"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="160" height="146"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                    <rect key="frame" x="0.0" y="0.0" width="160" height="144"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="160" height="146"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <stackView verifyAmbiguity="off" opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="v2K-HL-ALV">
                                                             <rect key="frame" x="0.0" y="0.0" width="160" height="144"/>
                                                             <subviews>
-                                                                <label verifyAmbiguity="off" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97j-wt-Kai">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4FF-xj-YSp">
                                                                     <rect key="frame" x="0.0" y="0.0" width="160" height="24"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                                    <color key="textColor" red="0.54509803921568623" green="0.74901960784313726" blue="0.80392156862745101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label verifyAmbiguity="off" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97j-wt-Kai">
+                                                                    <rect key="frame" x="0.0" y="24" width="160" height="24"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="24" id="jV6-tC-wh4"/>
                                                                     </constraints>
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nqt-3e-vQk" customClass="ProgressRingGroupView" customModule="Chii" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="24.000000000000007" width="160" height="113.66666666666669"/>
+                                                                    <rect key="frame" x="0.0" y="48.000000000000007" width="160" height="91.666666666666686"/>
                                                                     <userDefinedRuntimeAttributes>
+                                                                        <userDefinedRuntimeAttribute type="color" keyPath="puffRingStartColor">
+                                                                            <color key="value" name="selectedControlColor" catalog="System" colorSpace="catalog"/>
+                                                                        </userDefinedRuntimeAttribute>
+                                                                        <userDefinedRuntimeAttribute type="color" keyPath="puffRingEndColor">
+                                                                            <color key="value" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                                                        </userDefinedRuntimeAttribute>
+                                                                        <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                                                            <real key="value" value="0.90000000000000002"/>
+                                                                        </userDefinedRuntimeAttribute>
+                                                                        <userDefinedRuntimeAttribute type="number" keyPath="ringWidthScale">
+                                                                            <real key="value" value="0.34999999999999998"/>
+                                                                        </userDefinedRuntimeAttribute>
                                                                         <userDefinedRuntimeAttribute type="number" keyPath="shadowOpacity">
-                                                                            <real key="value" value="0.0"/>
+                                                                            <real key="value" value="0.5"/>
                                                                         </userDefinedRuntimeAttribute>
                                                                     </userDefinedRuntimeAttributes>
                                                                 </view>
@@ -147,6 +165,7 @@
                                                 </constraints>
                                                 <connections>
                                                     <outlet property="cellLabel" destination="97j-wt-Kai" id="LYS-KG-LkW"/>
+                                                    <outlet property="monthLabel" destination="4FF-xj-YSp" id="UPv-b6-3un"/>
                                                     <outlet property="rings" destination="nqt-3e-vQk" id="gGU-Iq-wgF"/>
                                                 </connections>
                                             </collectionViewCell>

@@ -14,12 +14,11 @@ class ChiiSetupVC: UITableViewController {
     var myParent: ActivityVC?
     let bleManager = CBCentralManager()
     var deviceDiscovered = Set<CBPeripheral>()
-
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setup()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
@@ -30,6 +29,7 @@ class ChiiSetupVC: UITableViewController {
     }
     
     @IBAction func backButton(_ sender: UIBarButtonItem) {
+        print("Going back")
         self.presentingViewController?.dismiss(animated: true) {
             if let activity = self.myParent {
                 activity.loadChii(with: "Success")
