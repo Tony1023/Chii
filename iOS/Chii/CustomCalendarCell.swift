@@ -14,8 +14,8 @@ class CustomCalendarCell: JTAppleCell {
     
     @IBOutlet weak var cellLabel: UILabel!
     
-    @IBOutlet weak var rings: ProgressRingGroupView!
-
-    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var rings: CalendarRingView!
     
+    var date: Date!
+
 }

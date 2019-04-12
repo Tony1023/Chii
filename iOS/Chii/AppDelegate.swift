@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CoreBluetooth
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,9 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    var bluetoothManager: CBCentralManager?
+    weak var activityReloadDelegate: ReloadDataDelegate?
+    weak var settingsReloadDelegate: ReloadDataDelegate?
     
     // Adding dummy data to application
-    func preLoadData() {
+    private func preLoadData() {
         let context = persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "DailyUsage", in: context)!
         let today = Date()
@@ -32,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let dateString = formatter.string(from: today)
         formatter.timeZone = TimeZone(identifier: "UTC")
         var date = formatter.date(from: dateString)!
-        for _ in 1...30 {
+        for _ in 1...60 {
             date = date.addingTimeInterval(-86400)
             let newData = NSManagedObject(entity: entity, insertInto: context)
             newData.setValue(date, forKey: "date")
@@ -42,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // Removing the previously added dummy data
-    func removeData() {
+    private func removeData() {
         let context = persistentContainer.viewContext
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
         request.returnsObjectsAsFaults = false
@@ -71,7 +75,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Go try to connect to the last connected ble device
+        // pull data
+        // update data
+        activityReloadDelegate?.onReloadData()
+        settingsReloadDelegate?.onReloadData()
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -124,5 +132,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+}
+
+protocol ReloadDataDelegate: class {
+    func onReloadData()
+}
+
+extension AppDelegate: CBPeripheralDelegate {
     
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
+        
+    }
 }

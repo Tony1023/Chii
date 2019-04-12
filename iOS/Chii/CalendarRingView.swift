@@ -10,7 +10,7 @@ import UIKit
 import MKRingProgressView
 
 @IBDesignable
-class ProgressRingGroupView: UIView {
+class CalendarRingView: UIView {
     
     private let puff = RingProgressView()
     
@@ -19,6 +19,7 @@ class ProgressRingGroupView: UIView {
         puff.endColor = puffRingEndColor
         puff.shadowOpacity = shadowOpacity
         puff.progress = 0.75
+        
         addSubview(puff)
     }
     
@@ -32,10 +33,17 @@ class ProgressRingGroupView: UIView {
         setup()
     }
     
-    func setupPuffRing(toBeVisible visible: Bool, withProgress progress: Double?) {
+    func setupPuffRing(toBeVisible visible: Bool, withProgress progress: Double? = nil) {
         self.isVisible = visible
         if let progress = progress {
             puff.progress = progress
+            if progress > 1.0 {
+                puffRingStartColor = .startRed
+                puffRingEndColor = .endRed
+            } else {
+                puffRingStartColor = .startBlue
+                puffRingEndColor = .endBlue
+            }
         }
     }
     
@@ -59,15 +67,13 @@ class ProgressRingGroupView: UIView {
     @IBInspectable
     var shadowOpacity: CGFloat = 0.5
     
-    @IBInspectable
-    var puffRingStartColor: UIColor = .blue {
+    var puffRingStartColor: UIColor = .startRed {
         didSet {
             puff.startColor = puffRingStartColor
         }
     }
     
-    @IBInspectable
-    var puffRingEndColor: UIColor = .red {
+    var puffRingEndColor: UIColor = .endBlue {
         didSet {
             puff.endColor = puffRingEndColor
         }
@@ -93,4 +99,11 @@ class ProgressRingGroupView: UIView {
         puff.frame = CGRect(origin: ringFrameOrigin, size: ringFrameSize)
     }
     
+}
+
+extension UIColor {
+    class var startBlue: UIColor { get { return UIColor(red: 159.0/255.0, green: 219.0/255.0, blue: 236.0/255.0, alpha: 1.0) } }
+    class var endBlue: UIColor { get { return UIColor(red: 87.0/255.0, green: 203.0/255.0, blue: 245.0/255.0, alpha: 1.0) } }
+    class var startRed: UIColor { get { return UIColor(red: 233.0/255.0, green: 101.0/255.0, blue: 101.0/255.0, alpha: 1.0) } }
+    class var endRed: UIColor { get { return UIColor(red: 182.0/255.0, green: 54.0/255.0, blue: 51.0/255.0, alpha: 1.0) } }
 }

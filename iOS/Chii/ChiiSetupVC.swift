@@ -11,7 +11,7 @@ import CoreBluetooth
 
 class ChiiSetupVC: UITableViewController {
 
-    var myParent: ActivityVC?
+    var myParent: MonthlyViewVC?
     let bleManager = CBCentralManager()
     var deviceDiscovered = Set<CBPeripheral>()
     
@@ -21,24 +21,9 @@ class ChiiSetupVC: UITableViewController {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
-    }
-    
-    private func setup() {
         bleManager.delegate = self
-    }
-    
-    @IBAction func backButton(_ sender: UIBarButtonItem) {
-        print("Going back")
-        self.presentingViewController?.dismiss(animated: true) {
-            if let activity = self.myParent {
-                activity.loadChii(with: "Success")
-            }
-        }
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.bluetoothManager = bleManager
     }
     
 }
