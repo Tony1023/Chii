@@ -17,14 +17,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        bluetoothManager = CBCentralManager()
+        bluetoothManager.delegate = self
         removeData()
         preLoadData()
+        fetchUsageData()
         return true
     }
     
-    var bluetoothManager: CBCentralManager?
-    weak var activityReloadDelegate: ReloadDataDelegate?
+    var usageDataModel = UsageDataModel()
+    var bluetoothManager: CBCentralManager!
+    private var deviceDiscovered = Set<CBPeripheral>()
+    weak var monthlyViewReloadDelegate: ReloadDataDelegate?
     weak var settingsReloadDelegate: ReloadDataDelegate?
+    weak var dailyViewReloadDelegate: ReloadDataDelegate?
+    
+    private func fetchUsageData() {
+        let context = persistentContainer.viewContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
+        request.returnsObjectsAsFaults = false
+        do {
+            let sort = NSSortDescriptor(key: "date", ascending: true)
+            request.sortDescriptors = [sort]
+            let result = try context.fetch(request)
+            var dataArray = [UsageDataModel.Data]()
+            for data in result as! [NSManagedObject] {
+                let date = data.value(forKey: "date") as! Date
+                let puffs = data.value(forKey: "puffs") as! Int
+                dataArray.append(UsageDataModel.Data(date: date, puffs: puffs, average: 0.0))
+            }
+            var sum: Int = 0
+            for i in 0..<dataArray.count {
+                sum += dataArray[i].puffs
+                if i >= 14 {
+                    sum -= dataArray[i - 14].puffs
+                }
+                dataArray[i].average = Double(sum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
+                usageDataModel.dailyUsage[dataArray[i].date] = dataArray[i]
+            }
+            
+        } catch {
+            print("Fetching database went wrong")
+        }
+    }
     
     // Adding dummy data to application
     private func preLoadData() {
@@ -78,8 +113,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Go try to connect to the last connected ble device
         // pull data
         // update data
-        activityReloadDelegate?.onReloadData()
-        settingsReloadDelegate?.onReloadData()
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -138,13 +171,22 @@ protocol ReloadDataDelegate: class {
     func onReloadData()
 }
 
-extension AppDelegate: CBPeripheralDelegate {
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        
+extension AppDelegate: CBCentralManagerDelegate {
+
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch(central.state) {
+        case .poweredOn:
+            bluetoothManager.scanForPeripherals(withServices: [CBUUID(string: "b1a67521-52eb-4d36-e13e-357d7c225465")])
+        default:
+            break
+        }
     }
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
-        
+
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        if !deviceDiscovered.contains(peripheral) {
+            deviceDiscovered.insert(peripheral)
+            print(peripheral.name ?? "Anonymous")
+            
+        }
     }
 }

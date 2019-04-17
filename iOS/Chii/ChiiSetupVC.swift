@@ -11,38 +11,32 @@ import CoreBluetooth
 
 class ChiiSetupVC: UITableViewController {
 
-    var myParent: MonthlyViewVC?
-    let bleManager = CBCentralManager()
-    var deviceDiscovered = Set<CBPeripheral>()
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true)
     }
+    
+    var myParent: MonthlyViewVC?
+    private weak var bluetoothManager: CBCentralManager!
+    private var deviceDiscovered = Set<CBPeripheral>()
+
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        bleManager.delegate = self
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.bluetoothManager = bleManager
+        bluetoothManager = appDelegate.bluetoothManager
     }
     
-}
-
-extension ChiiSetupVC: CBCentralManagerDelegate {
-    
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch(central.state) {
-        case .poweredOn:
-            bleManager.scanForPeripherals(withServices: nil)
-        default:
-            break
-        }
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        if !deviceDiscovered.contains(peripheral) {
-            deviceDiscovered.insert(peripheral)
-            print(peripheral.name ?? "Anonymous")
-        }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceCell", for: indexPath)
+        return cell
+    }
+    
 }
