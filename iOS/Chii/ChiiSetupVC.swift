@@ -16,14 +16,20 @@ class ChiiSetupVC: UITableViewController {
     }
     
     var myParent: MonthlyViewVC?
-    private weak var bluetoothManager: CBCentralManager!
-    private var deviceDiscovered = Set<CBPeripheral>()
+    private weak var shared: AppSharedResources!
+    private var deviceDiscovered = [String: CBPeripheral]()
+    private var deviceNames = [String]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        bluetoothManager = appDelegate.bluetoothManager
+        appDelegate.setupDelegate = self
+        shared = appDelegate
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -31,12 +37,44 @@ class ChiiSetupVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return deviceDiscovered.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceCell", for: indexPath)
+        cell.textLabel?.text = deviceNames[indexPath.row]
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let name = deviceNames[indexPath.row]
+        shared.bluetoothManager.connect(deviceDiscovered[name]!)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if shared.bluetoothManager.state == .poweredOn {
+            shared.bluetoothManager.scanForPeripherals(withServices: [CBUUID(string: "b1a67521-52eb-4d36-e13e-357d7c225465")])
+        }
+        if shared.chiiDevice?.state == .connected {
+            // update icon
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        shared.bluetoothManager.stopScan()
+    }
+
+}
+
+extension ChiiSetupVC: BluetoothServiceDelegate {
+    func discoveredNewDevice(_ peripheral: CBPeripheral) {
+        if let displayName = peripheral.name {
+            if (deviceDiscovered[displayName] == nil) {
+                deviceDiscovered[displayName] = peripheral
+                deviceNames.append(displayName)
+            }
+        }
+    }
 }

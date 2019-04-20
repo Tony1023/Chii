@@ -18,5 +18,6 @@ class UsageDataModel {
         var average: Double
     }
     
+    var grandAverage: Double!
     
 }

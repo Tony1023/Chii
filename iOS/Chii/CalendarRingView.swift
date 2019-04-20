@@ -9,28 +9,19 @@
 import UIKit
 import MKRingProgressView
 
-@IBDesignable
 class CalendarRingView: UIView {
     
     private let puff = RingProgressView()
-    
-    private func setup() {
-        puff.startColor = puffRingStartColor
-        puff.endColor = puffRingEndColor
-        puff.shadowOpacity = shadowOpacity
-        puff.progress = 0.75
-        
-        addSubview(puff)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
-    }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
+        
+        puff.startColor = .startRed
+        puff.endColor = .endBlue
+        puff.shadowOpacity = shadowOpacity
+        puff.gradientImageScale = gradient
+        
+        addSubview(puff)
     }
     
     func setupPuffRing(toBeVisible visible: Bool, withProgress progress: Double? = nil) {
@@ -38,46 +29,33 @@ class CalendarRingView: UIView {
         if let progress = progress {
             puff.progress = progress
             if progress > 1.0 {
-                puffRingStartColor = .startRed
-                puffRingEndColor = .endRed
+                puff.startColor = .startRed
+                puff.endColor = .endRed
             } else {
-                puffRingStartColor = .startBlue
-                puffRingEndColor = .endBlue
+                puff.startColor = .startBlue
+                puff.endColor = .endBlue
             }
         }
     }
     
-    private var isVisible = true {
+    var isVisible = true {
         didSet {
             puff.isHidden = !isVisible
         }
     }
     
-    @IBInspectable
     var scale: CGFloat = 0.9
     
-    @IBInspectable
-    var ringWidthScale: CGFloat = 0.5 {
+    var ringWidthScale: CGFloat = 0.35 {
         didSet {
             let side = min(self.bounds.width, self.bounds.height) * scale
             puff.ringWidth = side * 0.5 * ringWidthScale
         }
     }
     
-    @IBInspectable
     var shadowOpacity: CGFloat = 0.5
     
-    var puffRingStartColor: UIColor = .startRed {
-        didSet {
-            puff.startColor = puffRingStartColor
-        }
-    }
-    
-    var puffRingEndColor: UIColor = .endBlue {
-        didSet {
-            puff.endColor = puffRingEndColor
-        }
-    }
+    var gradient: CGFloat = 0.4
     
     private var puffRingWidth: CGFloat {
         get {

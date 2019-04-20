@@ -13,7 +13,6 @@ import CoreData
 
 class MonthlyViewVC: UIViewController {
     
-    private let converter = CustomDateConverter()
     private let UTCFormatter = DateFormatter()
     private let monthYearFormatter = DateFormatter()
     @IBOutlet private weak var calendarView: JTAppleCalendarView! {
@@ -23,20 +22,23 @@ class MonthlyViewVC: UIViewController {
         }
     }
     @IBOutlet private weak var yearLabel: UIButton!
-    private weak var usageData: UsageDataModel!
     private var currentMonth: String! {
         didSet {
             yearLabel.setTitle(currentMonth!, for: .normal)
         }
     }
-    private weak var dailyUsageVC: DailyUsageVC?
+    private weak var shared: AppSharedResources!
     private var needsReload = false
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.monthlyViewReloadDelegate = self
-        usageData = appDelegate.usageDataModel
+        shared = appDelegate
         UTCFormatter.timeZone = TimeZone(abbreviation: "UTC")
         UTCFormatter.dateFormat = "yyyy.MM.dd"
     }
@@ -67,12 +69,9 @@ class MonthlyViewVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         guard let identifier = segue.identifier else { return }
-        if identifier == "ToChiiSetup", let _ = segue.destination as? ChiiSetupVC {
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: nil, action: nil)
-        } else if identifier == "ToDailyUsage", let dailyUsageVC = segue.destination as? DailyUsageVC {
+        if identifier == "ToDailyUsage", let dailyUsageVC = segue.destination as? DailyUsageVC {
             if let tappedCell = sender as? CustomCalendarCell {
-                dailyUsageVC.date = tappedCell.date
-                self.dailyUsageVC = dailyUsageVC
+                dailyUsageVC.date = CustomDateConverter.convert2UTC(from: tappedCell.date)
             }
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: currentMonth, style: .plain, target: nil, action: nil)
         }
@@ -90,7 +89,7 @@ extension MonthlyViewVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDeleg
         let startDate = localFormatter.date(from: "2019.01.01")
         let endDate = localFormatter.date(from: "2019.12.31")
         calendar.scrollingMode = .nonStopToCell(withResistance: 1.0)
-        let params = ConfigurationParameters(startDate: startDate!, endDate: endDate!, numberOfRows: 6, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 7)!)
+        let params = ConfigurationParameters(startDate: startDate!, endDate: endDate!, numberOfRows: 6, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 1)!)
         return params;
     }
     
@@ -115,19 +114,23 @@ extension MonthlyViewVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDeleg
     private func prepare(forCell cell: CustomCalendarCell, atDate date: Date, cellState: CellState) {
         cell.date = date
         cell.cellLabel.text = cellState.text
-        if Calendar.current.isDateInToday(date) {
-            cell.cellLabel.textColor = .red
-        } else if cellState.dateBelongsTo == .thisMonth {
-            cell.cellLabel.textColor = .black
-            let key = converter.convert2UTC(from: date)
-            if let cellData = usageData.dailyUsage[key] {
+        if cellState.dateBelongsTo == .thisMonth {
+            if Calendar.current.isDateInToday(date) {
+                cell.cellLabel.textColor = .red
+            } else {
+                cell.cellLabel.textColor = .black
+            }
+            let key = CustomDateConverter.convert2UTC(from: date)
+            if let cellData = shared.usageData.dailyUsage[key] {
                 cell.rings.setupPuffRing(toBeVisible: true, withProgress: Double(cellData.puffs) / cellData.average)
             } else {
                 cell.rings.setupPuffRing(toBeVisible: false)
             }
+            cell.isUserInteractionEnabled = true
         } else {
             cell.cellLabel.textColor = .gray
             cell.rings.setupPuffRing(toBeVisible: false)
+            cell.isUserInteractionEnabled = false
         }
     }
     

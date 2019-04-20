@@ -8,6 +8,7 @@
 
 import UIKit
 import JTAppleCalendar
+import MKRingProgressView
 
 class DailyUsageVC: UIViewController {
     
@@ -18,15 +19,24 @@ class DailyUsageVC: UIViewController {
             weekView.minimumInteritemSpacing = 0
         }
     }
-    private weak var usageData: UsageDataModel!
+    @IBOutlet weak var progressArea: DailyProgressView!
+    @IBOutlet weak var puffNumber: UILabel!
+    @IBOutlet weak var dailyGoal: UILabel!
+    @IBOutlet weak var puffPercent: UILabel!
+    @IBOutlet weak var text: UILabel!
+    
+    private weak var shared: AppSharedResources!
     private var needsReload = false
-    private let converter = CustomDateConverter()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        usageData = appDelegate.usageDataModel
+        shared = appDelegate
         appDelegate.dailyViewReloadDelegate = self
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     override func viewDidLoad() {
@@ -35,13 +45,34 @@ class DailyUsageVC: UIViewController {
             [weak self] in
             self?.weekView.scrollDirection = .none
         }
+        if let data = shared.usageData.dailyUsage[date] {
+            let percentage = Double(data.puffs) / data.average
+            progressArea.setupRing(toBeVisible: true, withProgress: percentage)
+            puffNumber.text = String(data.puffs)
+            dailyGoal.text = "/\(Int(data.average)) puffs"
+            puffPercent.text = String(format: "%.0f", percentage * 100)
+        } else {
+            progressArea.setupRing(toBeVisible: false)
+            puffNumber.text = "No Data"
+            dailyGoal.text = nil
+            puffPercent.text = nil
+            text.text = nil
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        guard let identifier = segue.identifier else { return }
+        if identifier ==  "EmbeddedVC", let embeddedVC = segue.destination as? EmbeddedChartsVC {
+            embeddedVC.date = date
+        }
     }
 }
 
 extension DailyUsageVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
     
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let params = ConfigurationParameters(startDate: date!, endDate: date!, numberOfRows: 1, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 7)!)
+        let params = ConfigurationParameters(startDate: date!, endDate: date!, numberOfRows: 1, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 1)!)
         calendar.scrollingMode = .nonStopToCell(withResistance: 1.0)
         return params
     }
@@ -58,8 +89,8 @@ extension DailyUsageVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelega
     }
     
     private func prepare(forCell cell: CustomCalendarCell, atDate date: Date, cellState: CellState) {
-        let key = converter.convert2UTC(from: date)
-        if let cellData = usageData.dailyUsage[key] {
+        let key = CustomDateConverter.convert2UTC(from: date)
+        if let cellData = shared.usageData.dailyUsage[key] {
             cell.rings.setupPuffRing(toBeVisible: true, withProgress: Double(cellData.puffs) / cellData.average)
         } else {
             cell.rings.setupPuffRing(toBeVisible: false)

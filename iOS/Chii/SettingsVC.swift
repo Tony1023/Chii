@@ -10,11 +10,11 @@ import UIKit
 
 class SettingsVC: UIViewController {
     
-    private weak var appDelegate: AppDelegate!
+    private var needsReload = false
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        appDelegate = UIApplication.shared.delegate as? AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.settingsReloadDelegate = self
     }
 
@@ -33,7 +33,7 @@ class SettingsVC: UIViewController {
 
 extension SettingsVC: ReloadDataDelegate {
     func onReloadData() {
-        // Reload with new connection
+        needsReload = true
     }
 }
 

@@ -17,20 +17,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        bluetoothManager = CBCentralManager()
-        bluetoothManager.delegate = self
+        _bluetoothManager = CBCentralManager()
+        _bluetoothManager.delegate = self
         removeData()
         preLoadData()
         fetchUsageData()
         return true
     }
     
-    var usageDataModel = UsageDataModel()
-    var bluetoothManager: CBCentralManager!
-    private var deviceDiscovered = Set<CBPeripheral>()
+    private var _usageDataModel = UsageDataModel()
+    private var _bluetoothManager: CBCentralManager!
+    private var _chiiDevice: CBPeripheral?
     weak var monthlyViewReloadDelegate: ReloadDataDelegate?
     weak var settingsReloadDelegate: ReloadDataDelegate?
     weak var dailyViewReloadDelegate: ReloadDataDelegate?
+    weak var setupDelegate: BluetoothServiceDelegate?
+    
+    private func connectBluetooth(toDeviceWithId id: UUID) {
+        let device = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
+        if (!(device.state == .connected || device.state == .connecting)) {
+            _bluetoothManager.connect(device)
+        }
+    }
     
     private func fetchUsageData() {
         let context = persistentContainer.viewContext
@@ -46,15 +54,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let puffs = data.value(forKey: "puffs") as! Int
                 dataArray.append(UsageDataModel.Data(date: date, puffs: puffs, average: 0.0))
             }
-            var sum: Int = 0
+            var runningSum: Int = 0
+            var grandSum = 0
             for i in 0..<dataArray.count {
-                sum += dataArray[i].puffs
+                runningSum += dataArray[i].puffs
+                grandSum += dataArray[i].puffs
                 if i >= 14 {
-                    sum -= dataArray[i - 14].puffs
+                    runningSum -= dataArray[i - 14].puffs
                 }
-                dataArray[i].average = Double(sum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
-                usageDataModel.dailyUsage[dataArray[i].date] = dataArray[i]
+                dataArray[i].average = Double(runningSum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
+                _usageDataModel.dailyUsage[dataArray[i].date] = dataArray[i]
             }
+            _usageDataModel.grandAverage = Double(grandSum) / Double(dataArray.count)
             
         } catch {
             print("Fetching database went wrong")
@@ -110,9 +121,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Go try to connect to the last connected ble device
-        // pull data
-        // update data
+        if (bluetoothManager.delegate is AppDelegate) {
+            let idString = UserDefaults.standard.string(forKey: "lastConnectedDevice")
+            if let id = UUID(uuidString: idString ?? "") {
+                connectBluetooth(toDeviceWithId: id)
+            }
+        }
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -167,26 +181,71 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-protocol ReloadDataDelegate: class {
-    func onReloadData()
-}
-
 extension AppDelegate: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch(central.state) {
-        case .poweredOn:
-            bluetoothManager.scanForPeripherals(withServices: [CBUUID(string: "b1a67521-52eb-4d36-e13e-357d7c225465")])
-        default:
-            break
-        }
+        
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        if !deviceDiscovered.contains(peripheral) {
-            deviceDiscovered.insert(peripheral)
-            print(peripheral.name ?? "Anonymous")
-            
+        setupDelegate?.discoveredNewDevice(peripheral)
+    }
+    
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        if peripheral.state == .connected {
+            print("Connected")
+            peripheral.delegate = self
+            peripheral.discoverServices(nil)
+            _chiiDevice = peripheral
         }
     }
+}
+
+extension AppDelegate: CBPeripheralDelegate {
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        if let data = characteristic.value {
+            var arr = [UInt8]()
+            data.forEach { num in
+                arr.append(num)
+            }
+            arr.reverse()
+            var sum: UInt32 = 0
+            for number in arr {
+                sum *= 256
+                sum += UInt32(number)
+            }
+            print(sum)
+        }
+        
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        print("Characteristic discovered")
+        guard let characteristics = service.characteristics else { return }
+        for characteristic in characteristics {
+            peripheral.readValue(for: characteristic)
+            peripheral.setNotifyValue(true, for: characteristic)
+        }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        print("Notified")
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("Service discovered")
+        guard let services = peripheral.services else { return }
+        for service in services {
+            peripheral.discoverCharacteristics(nil, for: service)
+        }
+    }
+}
+
+extension AppDelegate: AppSharedResources {
+    
+    var bluetoothManager: CBCentralManager { return self._bluetoothManager }
+    
+    var usageData: UsageDataModel { return self._usageDataModel }
+    
+    var chiiDevice: CBPeripheral? { return self._chiiDevice }
 }
