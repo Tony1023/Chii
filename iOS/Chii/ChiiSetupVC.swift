@@ -54,7 +54,7 @@ class ChiiSetupVC: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if shared.bluetoothManager.state == .poweredOn {
-            shared.bluetoothManager.scanForPeripherals(withServices: [CBUUID(string: "b1a67521-52eb-4d36-e13e-357d7c225465")])
+            shared.bluetoothManager.scanForPeripherals(withServices: nil)
         }
         if shared.chiiDevice?.state == .connected {
             // update icon

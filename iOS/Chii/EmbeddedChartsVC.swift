@@ -15,6 +15,14 @@ class EmbeddedChartsVC: ButtonBarPagerTabStripViewController {
     
     var date: Date!
     
+    private var weekTabVC: WeekTabVC!
+    private var monthTabVC: MonthTabVC!
+    private var yearTabVC: YearTabVC!
+    
+    func setNeedsUpdateCharts() {
+        weekTabVC.needsReloadData = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // change selected bar color
@@ -36,11 +44,11 @@ class EmbeddedChartsVC: ButtonBarPagerTabStripViewController {
     }
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        let weekTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeekTab") as! WeekTabVC
+        weekTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeekTab") as? WeekTabVC
+        monthTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MonthTab") as? MonthTabVC
+        yearTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "YearTab") as? YearTabVC
         weekTabVC.date = date
-        let monthTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MonthTab") as! MonthTabVC
         monthTabVC.date = date
-        let yearTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "YearTab") as! YearTabVC
         yearTabVC.date = date
         return [weekTabVC, monthTabVC, yearTabVC]
     }

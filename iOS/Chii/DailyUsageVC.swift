@@ -26,13 +26,22 @@ class DailyUsageVC: UIViewController {
     @IBOutlet weak var text: UILabel!
     
     private weak var shared: AppSharedResources!
-    private var needsReload = false
+    private var needsUpdateUI = false {
+        didSet {
+            if needsUpdateUI, view.window != nil { updateUI() }
+        }
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         shared = appDelegate
         appDelegate.dailyViewReloadDelegate = self
+    }
+    
+    private func updateUI() {
+        needsUpdateUI = false
+        
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -63,7 +72,7 @@ class DailyUsageVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         guard let identifier = segue.identifier else { return }
-        if identifier ==  "EmbeddedVC", let embeddedVC = segue.destination as? EmbeddedChartsVC {
+        if identifier ==  "LoadEmbeddedCharts", let embeddedVC = segue.destination as? EmbeddedChartsVC {
             embeddedVC.date = date
         }
     }
@@ -89,7 +98,7 @@ extension DailyUsageVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelega
     }
     
     private func prepare(forCell cell: CustomCalendarCell, atDate date: Date, cellState: CellState) {
-        let key = CustomDateConverter.convert2UTC(from: date)
+        let key = DateConverter.convert2UTC(from: date)
         if let cellData = shared.usageData.dailyUsage[key] {
             cell.rings.setupPuffRing(toBeVisible: true, withProgress: Double(cellData.puffs) / cellData.average)
         } else {
@@ -102,6 +111,6 @@ extension DailyUsageVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelega
 
 extension DailyUsageVC: ReloadDataDelegate {
     func onReloadData() {
-        needsReload = true
+        needsUpdateUI = true
     }
 }

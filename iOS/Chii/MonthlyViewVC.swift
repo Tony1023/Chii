@@ -28,7 +28,11 @@ class MonthlyViewVC: UIViewController {
         }
     }
     private weak var shared: AppSharedResources!
-    private var needsReload = false
+    private var needsUpdateUI = false {
+        didSet {
+            if needsUpdateUI, view.window != nil { updateUI() }
+        }
+    }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -41,6 +45,11 @@ class MonthlyViewVC: UIViewController {
         shared = appDelegate
         UTCFormatter.timeZone = TimeZone(abbreviation: "UTC")
         UTCFormatter.dateFormat = "yyyy.MM.dd"
+    }
+    
+    private func updateUI() {
+        needsUpdateUI = false
+        calendarView.reloadData()
     }
 
     private func updateMonthYear(from visibleDates: DateSegmentInfo) {
@@ -55,15 +64,16 @@ class MonthlyViewVC: UIViewController {
         monthYearFormatter.dateFormat = "yyyy MMM"
         yearLabel.setTitle(monthYearFormatter.string(from: Date()), for: .normal)
         currentMonth = monthYearFormatter.string(from: Date())
-        calendarView.scrollToDate(monthYearFormatter.date(from: currentMonth)!, triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, extraAddedOffset: 0.0) { [weak self] in
-            self?.calendarView.reloadData()
-            self?.calendarView.scrollingMode = .nonStopToSection(withResistance: 1.0)
+        calendarView.scrollToDate(monthYearFormatter.date(from: currentMonth)!, triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, extraAddedOffset: 0.0) { [unowned self] in
+            self.calendarView.reloadData()
+            self.calendarView.scrollingMode = .nonStopToSection(withResistance: 1.0)
         }
         calendarView.visibleDates { visibleDates in self.updateMonthYear(from: visibleDates) }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if needsUpdateUI { updateUI() }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -71,9 +81,18 @@ class MonthlyViewVC: UIViewController {
         guard let identifier = segue.identifier else { return }
         if identifier == "ToDailyUsage", let dailyUsageVC = segue.destination as? DailyUsageVC {
             if let tappedCell = sender as? CustomCalendarCell {
-                dailyUsageVC.date = CustomDateConverter.convert2UTC(from: tappedCell.date)
+                dailyUsageVC.date = DateConverter.convert2UTC(from: tappedCell.date)
+                if Calendar.current.isDateInToday(tappedCell.date) {
+                    navigationItem.title = "Today"
+                } else {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "MMMM dd"
+                    navigationItem.title = formatter.string(from: tappedCell.date)
+                }
             }
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: currentMonth, style: .plain, target: nil, action: nil)
+            let index = currentMonth.firstIndex(of: " ")!
+            let year = currentMonth[..<index]
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: String(year), style: .plain, target: nil, action: nil)
         }
     }
     
@@ -120,7 +139,7 @@ extension MonthlyViewVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDeleg
             } else {
                 cell.cellLabel.textColor = .black
             }
-            let key = CustomDateConverter.convert2UTC(from: date)
+            let key = DateConverter.convert2UTC(from: date)
             if let cellData = shared.usageData.dailyUsage[key] {
                 cell.rings.setupPuffRing(toBeVisible: true, withProgress: Double(cellData.puffs) / cellData.average)
             } else {
@@ -138,6 +157,6 @@ extension MonthlyViewVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDeleg
 
 extension MonthlyViewVC: ReloadDataDelegate {
     func onReloadData() {
-        needsReload = true
+        needsUpdateUI = true
     }
 }

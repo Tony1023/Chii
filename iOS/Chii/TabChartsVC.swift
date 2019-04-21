@@ -12,23 +12,26 @@ import SwiftChart
 import CoreData
 import JTAppleCalendar
 
-class YearTabVC: UIViewController {
+class TabChartsVC: UIViewController {
     
     var date: Date! {
         didSet {
-            print(date)
-            start = DateConverter.getYearStart(forUTCDate: date)
-            end = DateConverter.getYearEnd(forUTCDate: date)
+            start = DateConverter.getWeekStart(forUTCDate: date)
+            end = DateConverter.getWeekEnd(forUTCDate: date)
         }
     }
     var needsReloadData = true
+    var daysPerGrid = 1.0
     private var needsUpdateUI = false
+    private var labels: [String] { return labelGen() }
     private weak var shared: AppSharedResources!
     private weak var context: NSManagedObjectContext!
     private var start: Date!
     private var end: Date!
     private var chartData: [(x: Double, y: Double)]!
     @IBOutlet weak var chart: Chart!
+    
+    func labelGen() -> [String] { return [String]() }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -52,7 +55,7 @@ class YearTabVC: UIViewController {
         do {
             let sort = NSSortDescriptor(key: "date", ascending: true)
             let from = NSPredicate(format: "date >= %@", start as NSDate)
-            let to = NSPredicate(format: "date <= %@", date as NSDate)
+            let to = NSPredicate(format: "date < %@", end as NSDate)
             let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [from, to])
             request.sortDescriptors = [sort]
             request.predicate = predicate
@@ -61,10 +64,9 @@ class YearTabVC: UIViewController {
             for i in 0..<result.count {
                 let data = result[i] as! NSManagedObject
                 let puff = data.value(forKey: "puffs") as! Int
-                let date = data.value(forKey: "date") as! Date
-                let daysSinceStart = date.timeIntervalSince(start) / 86400
-                chartData[i].x = daysSinceStart / 30.4
+                chartData[i].x = Double(i)
                 chartData[i].y = Double(puff)
+                print(i, puff)
             }
             DispatchQueue.main.async { [weak self] in
                 if self != nil, self?.view.window != nil{
@@ -79,8 +81,7 @@ class YearTabVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        chart.xLabels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        chart.xLabelsFormatter = { String(Int($1) + 1) }
+        chart.xLabelsFormatter = { self.labels[Int($1)] }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -93,14 +94,6 @@ class YearTabVC: UIViewController {
             needsReloadData = false
             DispatchQueue.global(qos: .userInteractive).async(execute: fetchData)
         }
-    }
-    
-}
-
-extension YearTabVC: IndicatorInfoProvider {
-    
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: "Year")
     }
     
 }

@@ -13,11 +13,11 @@ class ActivityNavigationVC: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let dailyUsageVC = self.storyboard?.instantiateViewController(withIdentifier: "dailyUsage") as? DailyUsageVC {
-            dailyUsageVC.date = CustomDateConverter.convert2UTC(from: Date())
+            dailyUsageVC.date = DateConverter.convert2UTC(from: Date())
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy MMM"
             viewControllers.first!.navigationItem.backBarButtonItem = UIBarButtonItem(title: formatter.string(from: Date()), style: .plain, target: nil, action: nil)
-            
+            viewControllers.first!.navigationItem.title = "Today"
             pushViewController(dailyUsageVC, animated: false)
         }
     }

@@ -25,13 +25,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    private var _usageDataModel = UsageDataModel()
+    private var _usageDataModel: UsageDataModel!
     private var _bluetoothManager: CBCentralManager!
     private var _chiiDevice: CBPeripheral?
     weak var monthlyViewReloadDelegate: ReloadDataDelegate?
     weak var settingsReloadDelegate: ReloadDataDelegate?
     weak var dailyViewReloadDelegate: ReloadDataDelegate?
     weak var setupDelegate: BluetoothServiceDelegate?
+    
+    fileprivate var timestamps = [UInt32]() {
+        didSet {
+            if let terminater = timestamps.last, terminater == 0 {
+                DispatchQueue.global(qos: .userInteractive).async {
+                    // store new data
+                    self.fetchUsageData()
+                    DispatchQueue.main.async {
+                        self.dailyViewReloadDelegate?.onReloadData()
+                        self.monthlyViewReloadDelegate?.onReloadData()
+                        self.settingsReloadDelegate?.onReloadData()
+                    }
+                }
+            }
+        }
+    }
     
     private func connectBluetooth(toDeviceWithId id: UUID) {
         let device = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
@@ -40,7 +56,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    // self will not be nil since it's appdelegate
     private func fetchUsageData() {
+        _usageDataModel = UsageDataModel()
         let context = persistentContainer.viewContext
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
         request.returnsObjectsAsFaults = false
@@ -76,12 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func preLoadData() {
         let context = persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "DailyUsage", in: context)!
-        let today = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        let dateString = formatter.string(from: today)
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        var date = formatter.date(from: dateString)!
+        var date = DateConverter.convert2UTC(from: Date())
         for _ in 1...60 {
             date = date.addingTimeInterval(-86400)
             let newData = NSManagedObject(entity: entity, insertInto: context)
@@ -109,6 +122,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        if _chiiDevice != nil {
+            _bluetoothManager.cancelPeripheralConnection(_chiiDevice!)
+        }
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -122,9 +138,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         if (bluetoothManager.delegate is AppDelegate) {
-            let idString = UserDefaults.standard.string(forKey: "lastConnectedDevice")
-            if let id = UUID(uuidString: idString ?? "") {
-                connectBluetooth(toDeviceWithId: id)
+            let uuid = UserDefaults.standard.object(forKey: "lastConnectedDevice") as? UUID
+            if uuid != nil {
+                connectBluetooth(toDeviceWithId: uuid!)
             }
         }
     }
@@ -193,6 +209,7 @@ extension AppDelegate: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if peripheral.state == .connected {
+            UserDefaults.standard.set(peripheral.identifier, forKey: "lastConnectedDevice")
             print("Connected")
             peripheral.delegate = self
             peripheral.discoverServices(nil)
@@ -203,18 +220,21 @@ extension AppDelegate: CBCentralManagerDelegate {
 
 extension AppDelegate: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        if let data = characteristic.value {
-            var arr = [UInt8]()
-            data.forEach { num in
-                arr.append(num)
+        DispatchQueue.global(qos: .userInteractive).async {
+            if let data = characteristic.value {
+                var arr = [UInt8]()
+                data.forEach { num in
+                    arr.append(num)
+                }
+                arr.reverse()
+                var sum: UInt32 = 0
+                for number in arr {
+                    sum *= 256
+                    sum += UInt32(number)
+                }
+                print(sum)
+                self.timestamps.append(sum)
             }
-            arr.reverse()
-            var sum: UInt32 = 0
-            for number in arr {
-                sum *= 256
-                sum += UInt32(number)
-            }
-            print(sum)
         }
         
     }

@@ -29,6 +29,7 @@
 		6F8D16E12269A83F0056153C /* YearTabVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8D16DF2269A83E0056153C /* YearTabVC.swift */; };
 		6F8D16E22269A83F0056153C /* MonthTabVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8D16E02269A83E0056153C /* MonthTabVC.swift */; };
 		6FA45ABA224FFBEC00F5343B /* CalendarRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA45AB9224FFBEC00F5343B /* CalendarRingView.swift */; };
+		6FBBC356226C3BFB0089E848 /* TabChartsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBBC355226C3BFB0089E848 /* TabChartsVC.swift */; };
 		AF2D695E675EB971BBE4800F /* Pods_Chii.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81B8B5DB3F3EA3ED2A0C9884 /* Pods_Chii.framework */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		6F8D16DF2269A83E0056153C /* YearTabVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YearTabVC.swift; sourceTree = "<group>"; };
 		6F8D16E02269A83E0056153C /* MonthTabVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonthTabVC.swift; sourceTree = "<group>"; };
 		6FA45AB9224FFBEC00F5343B /* CalendarRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarRingView.swift; sourceTree = "<group>"; };
+		6FBBC355226C3BFB0089E848 /* TabChartsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabChartsVC.swift; sourceTree = "<group>"; };
 		81B8B5DB3F3EA3ED2A0C9884 /* Pods_Chii.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chii.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0149F14F263466A44073840 /* Pods-Chii.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chii.release.xcconfig"; path = "Target Support Files/Pods-Chii/Pods-Chii.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +112,7 @@
 				6F1AFF132263F23000BC40EE /* UsageDataModel.swift */,
 				6F8721482266FA5800916CBF /* DailyProgressView.swift */,
 				6F87217022698E3D00916CBF /* EmbeddedChartsVC.swift */,
+				6FBBC355226C3BFB0089E848 /* TabChartsVC.swift */,
 				6F8721722269986500916CBF /* WeekTabVC.swift */,
 				6F8D16E02269A83E0056153C /* MonthTabVC.swift */,
 				6F8D16DF2269A83E0056153C /* YearTabVC.swift */,
@@ -272,6 +275,7 @@
 				6FA45ABA224FFBEC00F5343B /* CalendarRingView.swift in Sources */,
 				6F8D16E22269A83F0056153C /* MonthTabVC.swift in Sources */,
 				6F8721732269986500916CBF /* WeekTabVC.swift in Sources */,
+				6FBBC356226C3BFB0089E848 /* TabChartsVC.swift in Sources */,
 				6F1AFF142263F23000BC40EE /* UsageDataModel.swift in Sources */,
 				6F7112D2226101490040258E /* ActivityNavigationVC.swift in Sources */,
 				6F74E58622546CA7002471C0 /* Model.xcdatamodeld in Sources */,
