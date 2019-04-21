@@ -16,22 +16,21 @@ class TabChartsVC: UIViewController {
     
     var date: Date! {
         didSet {
-            start = DateConverter.getWeekStart(forUTCDate: date)
-            end = DateConverter.getWeekEnd(forUTCDate: date)
+            start = startDate
         }
     }
+    private var start: Date?
     var needsReloadData = true
     var daysPerGrid = 1.0
     private var needsUpdateUI = false
-    private var labels: [String] { return labelGen() }
     private weak var shared: AppSharedResources!
     private weak var context: NSManagedObjectContext!
-    private var start: Date!
-    private var end: Date!
     private var chartData: [(x: Double, y: Double)]!
     @IBOutlet weak var chart: Chart!
     
-    func labelGen() -> [String] { return [String]() }
+    var startDate: Date? { return nil }
+    
+    func labelGen(_ index: Int, _ dIndex: Double) -> String { return "" }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -52,10 +51,11 @@ class TabChartsVC: UIViewController {
     private func fetchData() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
         request.returnsObjectsAsFaults = false
+        guard let start = self.start else { return }
         do {
             let sort = NSSortDescriptor(key: "date", ascending: true)
             let from = NSPredicate(format: "date >= %@", start as NSDate)
-            let to = NSPredicate(format: "date < %@", end as NSDate)
+            let to = NSPredicate(format: "date <= %@", date as NSDate)
             let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [from, to])
             request.sortDescriptors = [sort]
             request.predicate = predicate
@@ -64,9 +64,10 @@ class TabChartsVC: UIViewController {
             for i in 0..<result.count {
                 let data = result[i] as! NSManagedObject
                 let puff = data.value(forKey: "puffs") as! Int
-                chartData[i].x = Double(i)
+                let date = data.value(forKey: "date") as! Date
+                let daysSinceStart = date.timeIntervalSince(start) / 86400
+                chartData[i].x = daysSinceStart / daysPerGrid
                 chartData[i].y = Double(puff)
-                print(i, puff)
             }
             DispatchQueue.main.async { [weak self] in
                 if self != nil, self?.view.window != nil{
@@ -81,7 +82,7 @@ class TabChartsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        chart.xLabelsFormatter = { self.labels[Int($1)] }
+        chart.xLabelsFormatter = labelGen
     }
     
     override func viewWillAppear(_ animated: Bool) {
