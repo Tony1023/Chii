@@ -17,7 +17,7 @@ class ActivityNavigationVC: UINavigationController {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy MMM"
             viewControllers.first!.navigationItem.backBarButtonItem = UIBarButtonItem(title: formatter.string(from: Date()), style: .plain, target: nil, action: nil)
-            viewControllers.first!.navigationItem.title = "Today"
+            dailyUsageVC.navigationItem.title = "Today"
             pushViewController(dailyUsageVC, animated: false)
         }
     }

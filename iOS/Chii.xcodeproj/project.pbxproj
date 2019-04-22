@@ -16,7 +16,6 @@
 		6F64BCAD22476FD700CCA117 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F64BCAB22476FD700CCA117 /* Main.storyboard */; };
 		6F64BCB222476FD900CCA117 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */; };
 		6F64BCBA224775AD00CCA117 /* DiscoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */; };
-		6F64BCBF2248055E00CCA117 /* assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F64BCBE2248055E00CCA117 /* assets.xcassets */; };
 		6F64BCC42248A27F00CCA117 /* ChiiSetupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */; };
 		6F7112D2226101490040258E /* ActivityNavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7112D1226101490040258E /* ActivityNavigationVC.swift */; };
 		6F74E58622546CA7002471C0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6F74E58422546CA7002471C0 /* Model.xcdatamodeld */; };
@@ -35,7 +34,7 @@
 
 /* Begin PBXFileReference section */
 		138F3CBDD5B9BF6FA0125F92 /* Pods-Chii.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chii.debug.xcconfig"; path = "Target Support Files/Pods-Chii/Pods-Chii.debug.xcconfig"; sourceTree = "<group>"; };
-		6F0CF11A22630A9D00BB6632 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets/Assets.xcassets; sourceTree = "<group>"; };
+		6F0CF11A22630A9D00BB6632 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../Assets/Assets.xcassets; sourceTree = "<group>"; };
 		6F1AFF132263F23000BC40EE /* UsageDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataModel.swift; sourceTree = "<group>"; };
 		6F511C81225AA5E6001A5F29 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F511C83225ACA5C001A5F29 /* DailyUsageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyUsageVC.swift; sourceTree = "<group>"; };
@@ -46,7 +45,6 @@
 		6F64BCB122476FD900CCA117 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F64BCB322476FD900CCA117 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverVC.swift; sourceTree = "<group>"; };
-		6F64BCBE2248055E00CCA117 /* assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = assets.xcassets; sourceTree = "<group>"; };
 		6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChiiSetupVC.swift; sourceTree = "<group>"; };
 		6F7112D1226101490040258E /* ActivityNavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityNavigationVC.swift; sourceTree = "<group>"; };
 		6F74E58522546CA7002471C0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -79,7 +77,6 @@
 		6F64BC9922476FD700CCA117 = {
 			isa = PBXGroup;
 			children = (
-				6F0CF11A22630A9D00BB6632 /* Assets.xcassets */,
 				6F64BCA422476FD700CCA117 /* Chii */,
 				6F64BCA322476FD700CCA117 /* Products */,
 				7A757C4E352E17F0DDFE5C0C /* Pods */,
@@ -128,7 +125,7 @@
 			children = (
 				6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */,
 				6F64BCB322476FD900CCA117 /* Info.plist */,
-				6F64BCBE2248055E00CCA117 /* assets.xcassets */,
+				6F0CF11A22630A9D00BB6632 /* Assets.xcassets */,
 			);
 			path = Supports;
 			sourceTree = "<group>";
@@ -213,7 +210,6 @@
 			files = (
 				6F0CF11B22630A9D00BB6632 /* Assets.xcassets in Resources */,
 				6F64BCB222476FD900CCA117 /* LaunchScreen.storyboard in Resources */,
-				6F64BCBF2248055E00CCA117 /* assets.xcassets in Resources */,
 				6F64BCAD22476FD700CCA117 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

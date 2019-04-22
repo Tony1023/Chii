@@ -70,7 +70,7 @@ class TabChartsVC: UIViewController {
                 chartData[i].y = Double(puff)
             }
             DispatchQueue.main.async { [weak self] in
-                if self != nil, self?.view.window != nil{
+                if self != nil {
                     self?.chartData = chartData
                     self?.updateUI()
                 }

@@ -83,11 +83,11 @@ class MonthlyViewVC: UIViewController {
             if let tappedCell = sender as? CustomCalendarCell {
                 dailyUsageVC.date = DateConverter.convert2UTC(from: tappedCell.date)
                 if Calendar.current.isDateInToday(tappedCell.date) {
-                    navigationItem.title = "Today"
+                    dailyUsageVC.navigationItem.title = "Today"
                 } else {
                     let formatter = DateFormatter()
                     formatter.dateFormat = "MMMM dd"
-                    navigationItem.title = formatter.string(from: tappedCell.date)
+                    dailyUsageVC.navigationItem.title = formatter.string(from: tappedCell.date)
                 }
             }
             let index = currentMonth.firstIndex(of: " ")!

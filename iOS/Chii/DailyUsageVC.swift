@@ -24,7 +24,11 @@ class DailyUsageVC: UIViewController {
     @IBOutlet weak var dailyGoal: UILabel!
     @IBOutlet weak var puffPercent: UILabel!
     @IBOutlet weak var text: UILabel!
+    @IBOutlet weak var noDataLabel: UILabel!
     
+    @IBAction func tapped(_ sender: Any) {
+        updateUI()
+    }
     private weak var shared: AppSharedResources!
     private var needsUpdateUI = false {
         didSet {
@@ -41,7 +45,30 @@ class DailyUsageVC: UIViewController {
     
     private func updateUI() {
         needsUpdateUI = false
-        
+        weekView.reloadData()
+        if let data = shared.usageData.dailyUsage[date] {
+            noDataLabel.isHidden = true
+            let percentage = Double(data.puffs) / data.average
+            progressArea.setupRing(toBeVisible: true, withProgress: percentage)
+            puffNumber.text = String(data.puffs)
+            dailyGoal.text = "/\(Int(data.average)) puffs"
+            puffPercent.text = String(format: "%.0f", percentage * 100)
+            text.text = "% usage"
+    
+            let scale: CGFloat = 42.0 / 60.0
+            self.puffNumber.transform = .identity
+            puffNumber.font = puffNumber.font.withSize(60)
+            UIView.animate(withDuration: 1.0, animations: {
+                self.puffNumber.transform = CGAffineTransform(scaleX: scale, y: scale)
+            })
+        } else {
+            progressArea.setupRing(toBeVisible: false)
+            noDataLabel.isHidden = false
+            puffNumber.text = nil
+            dailyGoal.text = nil
+            puffPercent.text = nil
+            text.text = nil
+        }
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -50,11 +77,9 @@ class DailyUsageVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        weekView.scrollToDate(date, triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, extraAddedOffset: 0.0) {
-            [weak self] in
-            self?.weekView.scrollDirection = .none
-        }
+        weekView.scrollToDate(DateConverter.convert2LocalDate(fromUTCDate: date), triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, extraAddedOffset: 0.0)
         if let data = shared.usageData.dailyUsage[date] {
+            noDataLabel.isHidden = true
             let percentage = Double(data.puffs) / data.average
             progressArea.setupRing(toBeVisible: true, withProgress: percentage)
             puffNumber.text = String(data.puffs)
@@ -62,11 +87,21 @@ class DailyUsageVC: UIViewController {
             puffPercent.text = String(format: "%.0f", percentage * 100)
         } else {
             progressArea.setupRing(toBeVisible: false)
-            puffNumber.text = "No Data"
+            noDataLabel.isHidden = false
+            puffNumber.text = nil
             dailyGoal.text = nil
             puffPercent.text = nil
             text.text = nil
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if needsUpdateUI { updateUI() }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -81,7 +116,8 @@ class DailyUsageVC: UIViewController {
 extension DailyUsageVC: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
     
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
-        let params = ConfigurationParameters(startDate: date!, endDate: date!, numberOfRows: 1, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 1)!)
+        let localDate = DateConverter.convert2LocalDate(fromUTCDate: date)
+        let params = ConfigurationParameters(startDate: localDate, endDate: localDate, numberOfRows: 1, calendar: Calendar.current, generateInDates: .forAllMonths, generateOutDates: .tillEndOfRow, firstDayOfWeek: DaysOfWeek(rawValue: 1)!)
         calendar.scrollingMode = .nonStopToCell(withResistance: 1.0)
         return params
     }

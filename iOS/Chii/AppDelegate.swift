@@ -35,15 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     fileprivate var timestamps = [UInt32]() {
         didSet {
-            if let terminater = timestamps.last, terminater == 0 {
-                DispatchQueue.global(qos: .userInteractive).async {
-                    // store new data
-                    self.fetchUsageData()
-                    DispatchQueue.main.async {
-                        self.dailyViewReloadDelegate?.onReloadData()
-                        self.monthlyViewReloadDelegate?.onReloadData()
-                        self.settingsReloadDelegate?.onReloadData()
-                    }
+            DispatchQueue.global(qos: .userInteractive).async {
+                self.storeNewData()
+                self.fetchUsageData()
+                DispatchQueue.main.async {
+                    self.dailyViewReloadDelegate?.onReloadData()
+                    self.monthlyViewReloadDelegate?.onReloadData()
+                    self.settingsReloadDelegate?.onReloadData()
                 }
             }
         }
@@ -87,6 +85,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         } catch {
             print("Fetching database went wrong")
+        }
+    }
+    
+    private func storeNewData() {
+        let lastSync = UserDefaults.standard.value(forKey: "lastSync") as? Double ?? Date().timeIntervalSinceReferenceDate
+        UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: "lastSync")
+        do {
+            let context = persistentContainer.viewContext
+            let entity = NSEntityDescription.entity(forEntityName: "DailyUsage", in: context)!
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
+            request.returnsObjectsAsFaults = false
+            for deltaTime in timestamps {
+                let time = Double(deltaTime * 60) + lastSync
+                let puffTime = DateConverter.convert2UTC(from: Date(timeIntervalSinceReferenceDate: time))
+                let predicate = NSPredicate(format: "date = %@", puffTime as NSDate)
+                request.predicate = predicate
+                let result = try context.fetch(request)
+                if result.count == 1 {
+                    let entry = result[0] as! NSManagedObject
+                    let puffs = entry.value(forKey: "puffs") as! Int
+                    entry.setValue(puffs + 1, forKey: "puffs")
+                } else if result.count == 0 {
+                    let newEntry = NSManagedObject(entity: entity, insertInto: context)
+                    newEntry.setValue(puffTime, forKey: "date")
+                    newEntry.setValue(1, forKey: "puffs")
+                } else {
+                    throw NSError()
+                }
+                saveContext()
+            }
+            
+        } catch {
+            print("Updating value error")
         }
     }
     
@@ -138,10 +169,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         if (bluetoothManager.delegate is AppDelegate) {
-            let uuid = UserDefaults.standard.object(forKey: "lastConnectedDevice") as? UUID
-            if uuid != nil {
-                connectBluetooth(toDeviceWithId: uuid!)
-            }
+//            let uuid = UserDefaults.standard.object(forKey: "lastConnectedDevice") as? UUID
+//            if uuid != nil {
+//                connectBluetooth(toDeviceWithId: uuid!)
+//            }
         }
     }
     
@@ -209,7 +240,7 @@ extension AppDelegate: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if peripheral.state == .connected {
-            UserDefaults.standard.set(peripheral.identifier, forKey: "lastConnectedDevice")
+            UserDefaults.standard.set(peripheral.identifier.uuidString, forKey: "lastConnectedDevice")
             print("Connected")
             peripheral.delegate = self
             peripheral.discoverServices(nil)
@@ -222,18 +253,19 @@ extension AppDelegate: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         DispatchQueue.global(qos: .userInteractive).async {
             if let data = characteristic.value {
-                var arr = [UInt8]()
-                data.forEach { num in
-                    arr.append(num)
+                var dataArray = [UInt32]()
+                var runningSum: UInt32 = 0
+                for i in 0..<data.count {
+                    if i % 4 == 0 {
+                        runningSum = 0
+                    }
+                    runningSum *= 256
+                    runningSum += UInt32(data[i])
+                    if i % 4 == 3 {
+                        dataArray.append(runningSum)
+                    }
                 }
-                arr.reverse()
-                var sum: UInt32 = 0
-                for number in arr {
-                    sum *= 256
-                    sum += UInt32(number)
-                }
-                print(sum)
-                self.timestamps.append(sum)
+                self.timestamps = dataArray
             }
         }
         

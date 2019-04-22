@@ -43,6 +43,11 @@ class EmbeddedChartsVC: ButtonBarPagerTabStripViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        moveTo(viewController: weekTabVC, animated: false)
+    }
+    
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         weekTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeekTab") as? WeekTabVC
         monthTabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MonthTab") as? MonthTabVC
@@ -50,6 +55,6 @@ class EmbeddedChartsVC: ButtonBarPagerTabStripViewController {
         weekTabVC.date = date
         monthTabVC.date = date
         yearTabVC.date = date
-        return [weekTabVC, monthTabVC, yearTabVC]
+        return [yearTabVC, monthTabVC, weekTabVC]
     }
 }
