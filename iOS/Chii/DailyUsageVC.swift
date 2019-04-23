@@ -25,14 +25,28 @@ class DailyUsageVC: UIViewController {
     @IBOutlet weak var puffPercent: UILabel!
     @IBOutlet weak var text: UILabel!
     @IBOutlet weak var noDataLabel: UILabel!
+    @IBOutlet weak var topLabelWrapper: UIView!
+    @IBOutlet weak var streakLabel: UILabel!
+    @IBOutlet weak var dayCountLabel: UILabel!
     
-    @IBAction func tapped(_ sender: Any) {
-        updateUI()
-    }
     private weak var shared: AppSharedResources!
     private var needsUpdateUI = false {
         didSet {
             if needsUpdateUI, view.window != nil { updateUI() }
+        }
+    }
+    private var noData: Bool {
+        get { return topLabelWrapper.isHidden }
+        set {
+            noDataLabel.isHidden = !newValue
+            topLabelWrapper.isHidden = newValue
+            if newValue {
+                puffNumber.text = nil
+                dailyGoal.text = nil
+                puffPercent.text = nil
+                text.text = nil
+                progressArea.setupRing(toBeVisible: false)
+            }
         }
     }
     
@@ -44,31 +58,31 @@ class DailyUsageVC: UIViewController {
     }
     
     private func updateUI() {
-        needsUpdateUI = false
-        weekView.reloadData()
+        if needsUpdateUI { weekView.reloadData() }
         if let data = shared.usageData.dailyUsage[date] {
-            noDataLabel.isHidden = true
-            let percentage = Double(data.puffs) / data.average
+            noData = false
+            // Streaks and day count
+            dayCountLabel.text = "Day \(Int(date.timeIntervalSince(shared.usageData.firstDay) / 86400))"
+            streakLabel.text = "Streak \(data.streak)"
+            let percentage = Double(data.puffs) / data.average.rounded(.towardZero)
             progressArea.setupRing(toBeVisible: true, withProgress: percentage)
             puffNumber.text = String(data.puffs)
             dailyGoal.text = "/\(Int(data.average)) puffs"
             puffPercent.text = String(format: "%.0f", percentage * 100)
             text.text = "% usage"
     
-            let scale: CGFloat = 42.0 / 60.0
-            self.puffNumber.transform = .identity
-            puffNumber.font = puffNumber.font.withSize(60)
-            UIView.animate(withDuration: 1.0, animations: {
-                self.puffNumber.transform = CGAffineTransform(scaleX: scale, y: scale)
-            })
+            if needsUpdateUI {
+                let scale: CGFloat = 42.0 / 60.0
+                self.puffNumber.transform = .identity
+                puffNumber.font = puffNumber.font.withSize(60)
+                UIView.animate(withDuration: 1.0, animations: {
+                    self.puffNumber.transform = CGAffineTransform(scaleX: scale, y: scale)
+                })
+            }
         } else {
-            progressArea.setupRing(toBeVisible: false)
-            noDataLabel.isHidden = false
-            puffNumber.text = nil
-            dailyGoal.text = nil
-            puffPercent.text = nil
-            text.text = nil
+            noData = true
         }
+        needsUpdateUI = false
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -78,21 +92,7 @@ class DailyUsageVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         weekView.scrollToDate(DateConverter.convert2LocalDate(fromUTCDate: date), triggerScrollToDateDelegate: false, animateScroll: false, preferredScrollPosition: nil, extraAddedOffset: 0.0)
-        if let data = shared.usageData.dailyUsage[date] {
-            noDataLabel.isHidden = true
-            let percentage = Double(data.puffs) / data.average
-            progressArea.setupRing(toBeVisible: true, withProgress: percentage)
-            puffNumber.text = String(data.puffs)
-            dailyGoal.text = "/\(Int(data.average)) puffs"
-            puffPercent.text = String(format: "%.0f", percentage * 100)
-        } else {
-            progressArea.setupRing(toBeVisible: false)
-            noDataLabel.isHidden = false
-            puffNumber.text = nil
-            dailyGoal.text = nil
-            puffPercent.text = nil
-            text.text = nil
-        }
+        updateUI()
     }
     
     override func viewDidLayoutSubviews() {

@@ -414,17 +414,35 @@
                                         <rect key="frame" x="0.0" y="107" width="375" height="1329"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Q9P-KZ-ZJs">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="780"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="750"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0I-h1-BaZ">
-                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
-                                                        <state key="normal" title="Button"/>
-                                                        <connections>
-                                                            <action selector="tapped:" destination="VC7-dz-1th" eventType="touchUpInside" id="tT8-ys-O3e"/>
-                                                        </connections>
-                                                    </button>
+                                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JhO-Aw-Jpq">
+                                                        <rect key="frame" x="0.0" y="-100" width="375" height="100"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dZP-do-IiL">
+                                                                <rect key="frame" x="280" y="31" width="75" height="38.5"/>
+                                                                <fontDescription key="fontDescription" type="italicSystem" pointSize="32"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ebg-Dj-5g5">
+                                                                <rect key="frame" x="20" y="31" width="81.5" height="38.5"/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="32"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstItem="ebg-Dj-5g5" firstAttribute="leading" secondItem="JhO-Aw-Jpq" secondAttribute="leading" constant="20" id="4CW-ek-mC9"/>
+                                                            <constraint firstAttribute="height" constant="100" id="9BZ-3d-Usy"/>
+                                                            <constraint firstAttribute="trailing" secondItem="dZP-do-IiL" secondAttribute="trailing" constant="20" id="MV2-QO-QlE"/>
+                                                            <constraint firstItem="ebg-Dj-5g5" firstAttribute="centerY" secondItem="JhO-Aw-Jpq" secondAttribute="centerY" id="Qhr-9i-jVE"/>
+                                                            <constraint firstItem="dZP-do-IiL" firstAttribute="centerY" secondItem="JhO-Aw-Jpq" secondAttribute="centerY" id="f3p-vt-EZo"/>
+                                                        </constraints>
+                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zLk-qq-2Py" customClass="DailyProgressView" customModule="Chii" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="30" width="375" height="375"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="39" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oEM-2B-bFk">
                                                                 <rect key="frame" x="115" y="124" width="54.5" height="50.5"/>
@@ -481,7 +499,7 @@
                                                         </userDefinedRuntimeAttributes>
                                                     </view>
                                                     <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="obI-5V-cpk">
-                                                        <rect key="frame" x="0.0" y="405" width="375" height="375"/>
+                                                        <rect key="frame" x="0.0" y="375" width="375" height="375"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="obI-5V-cpk" secondAttribute="height" multiplier="1:1" id="3i8-lC-31u"/>
                                                         </constraints>
@@ -528,11 +546,14 @@
                     <size key="freeformSize" width="375" height="1500"/>
                     <connections>
                         <outlet property="dailyGoal" destination="EN7-IG-YS8" id="H4o-b5-HB6"/>
+                        <outlet property="dayCountLabel" destination="ebg-Dj-5g5" id="OTx-wv-xBM"/>
                         <outlet property="noDataLabel" destination="VCo-Wf-Zfe" id="p8b-xp-MfZ"/>
                         <outlet property="progressArea" destination="zLk-qq-2Py" id="Jfr-OI-lbf"/>
                         <outlet property="puffNumber" destination="oEM-2B-bFk" id="dUW-fD-eDm"/>
                         <outlet property="puffPercent" destination="xks-ec-fBq" id="tub-vI-kN1"/>
+                        <outlet property="streakLabel" destination="dZP-do-IiL" id="c9D-jb-4Ui"/>
                         <outlet property="text" destination="92R-uf-fBo" id="EVZ-XR-mkL"/>
+                        <outlet property="topLabelWrapper" destination="JhO-Aw-Jpq" id="53a-FJ-oZM"/>
                         <outlet property="weekView" destination="GHY-Xf-ghj" id="aPb-Zp-fOb"/>
                     </connections>
                 </viewController>
@@ -792,7 +813,7 @@
         <image name="SettingsBarIcon" width="31" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5KJ-Nd-Rwd"/>
+        <segue reference="gb8-cn-4K9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.45098039220000002" green="0.78823529410000004" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

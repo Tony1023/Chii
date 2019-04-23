@@ -48,7 +48,9 @@ class ChiiSetupVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let name = deviceNames[indexPath.row]
-        shared.bluetoothManager.connect(deviceDiscovered[name]!)
+        shared.connectTo(peripheral: deviceDiscovered[name]!) { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

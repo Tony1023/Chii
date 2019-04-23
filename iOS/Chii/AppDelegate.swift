@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import CoreBluetooth
+import GameKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -32,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     weak var settingsReloadDelegate: ReloadDataDelegate?
     weak var dailyViewReloadDelegate: ReloadDataDelegate?
     weak var setupDelegate: BluetoothServiceDelegate?
+    private var completionHandler: (()->Void)?
     
     fileprivate var timestamps = [UInt32]() {
         didSet {
@@ -44,13 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.settingsReloadDelegate?.onReloadData()
                 }
             }
-        }
-    }
-    
-    private func connectBluetooth(toDeviceWithId id: UUID) {
-        let device = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
-        if (!(device.state == .connected || device.state == .connecting)) {
-            _bluetoothManager.connect(device)
         }
     }
     
@@ -68,10 +63,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             for data in result as! [NSManagedObject] {
                 let date = data.value(forKey: "date") as! Date
                 let puffs = data.value(forKey: "puffs") as! Int
-                dataArray.append(UsageDataModel.Data(date: date, puffs: puffs, average: 0.0))
+                dataArray.append(UsageDataModel.Data(date: date, puffs: puffs, average: 0.0, streak: 0))
             }
             var runningSum: Int = 0
-            var grandSum = 0
+            var grandSum: Int = 0
+            var runningStreak: Int = 0
             for i in 0..<dataArray.count {
                 runningSum += dataArray[i].puffs
                 grandSum += dataArray[i].puffs
@@ -79,10 +75,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     runningSum -= dataArray[i - 14].puffs
                 }
                 dataArray[i].average = Double(runningSum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
+                if Double(dataArray[i].puffs) < dataArray[i].average {
+                    runningStreak += 1
+                } else {
+                    runningStreak = 0
+                }
+                dataArray[i].streak = runningStreak
                 _usageDataModel.dailyUsage[dataArray[i].date] = dataArray[i]
             }
             _usageDataModel.grandAverage = Double(grandSum) / Double(dataArray.count)
-            
+            if let first = dataArray.first {
+                _usageDataModel.firstDay = first.date
+            }
         } catch {
             print("Fetching database went wrong")
         }
@@ -126,11 +130,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let context = persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "DailyUsage", in: context)!
         var date = DateConverter.convert2UTC(from: Date())
-        for _ in 1...60 {
+        let random = GKRandomSource()
+        var upperLimit = 40.0, lowerLimit = 20.0
+        let newData = NSManagedObject(entity: entity, insertInto: context)
+        newData.setValue(date, forKey: "date")
+        newData.setValue(Int(lowerLimit) / 2, forKey: "puffs")
+        for _ in 1...100 {
+            let dice = GKGaussianDistribution(randomSource: random, lowestValue: Int(lowerLimit), highestValue: Int(upperLimit))
             date = date.addingTimeInterval(-86400)
             let newData = NSManagedObject(entity: entity, insertInto: context)
             newData.setValue(date, forKey: "date")
-            newData.setValue(Int.random(in: 30...45), forKey: "puffs")
+            newData.setValue(dice.nextInt(), forKey: "puffs")
+            upperLimit += 0.1
+            lowerLimit += 0.04
         }
         saveContext()
     }
@@ -168,11 +180,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        if (bluetoothManager.delegate is AppDelegate) {
-//            let uuid = UserDefaults.standard.object(forKey: "lastConnectedDevice") as? UUID
-//            if uuid != nil {
-//                connectBluetooth(toDeviceWithId: uuid!)
-//            }
+        if _chiiDevice?.state != .connected, _chiiDevice?.state != .connecting {
+            if let uuid = UserDefaults.standard.string(forKey: "lastConnectedDevice") {
+                let id = UUID(uuidString: uuid)!
+                _chiiDevice = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
+                if (!(_chiiDevice?.state == .connected || _chiiDevice?.state == .connecting)) {
+                    _bluetoothManager.connect(_chiiDevice!)
+                }
+            }
         }
     }
     
@@ -281,7 +296,10 @@ extension AppDelegate: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        print("Notified")
+        if let handler = completionHandler {
+            handler()
+            completionHandler = nil
+        }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -294,6 +312,11 @@ extension AppDelegate: CBPeripheralDelegate {
 }
 
 extension AppDelegate: AppSharedResources {
+    
+    func connectTo(peripheral: CBPeripheral, completion: (() -> Void)?) {
+        _bluetoothManager.connect(peripheral)
+        completionHandler = completion
+    }
     
     var bluetoothManager: CBCentralManager { return self._bluetoothManager }
     

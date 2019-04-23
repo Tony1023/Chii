@@ -21,4 +21,5 @@ protocol AppSharedResources: class {
     var bluetoothManager: CBCentralManager { get }
     var usageData: UsageDataModel { get }
     var chiiDevice: CBPeripheral? { get }
+    func connectTo(peripheral: CBPeripheral, completion: (()->Void)?)
 }

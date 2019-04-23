@@ -16,8 +16,11 @@ class UsageDataModel {
         var date: Date
         var puffs: Int
         var average: Double
+        var streak: Int
     }
     
     var grandAverage: Double!
+    
+    var firstDay: Date!
     
 }
