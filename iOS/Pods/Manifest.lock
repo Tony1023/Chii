@@ -2,12 +2,14 @@ PODS:
   - JTAppleCalendar (7.1.6)
   - MKRingProgressView (2.2)
   - SwiftChart (1.0.1)
+  - SwiftyGif (5.0.0)
   - XLPagerTabStrip (9.0.0)
 
 DEPENDENCIES:
   - JTAppleCalendar (~> 7.0)
   - MKRingProgressView
   - SwiftChart
+  - SwiftyGif
   - XLPagerTabStrip (~> 9.0)
 
 SPEC REPOS:
@@ -15,14 +17,16 @@ SPEC REPOS:
     - JTAppleCalendar
     - MKRingProgressView
     - SwiftChart
+    - SwiftyGif
     - XLPagerTabStrip
 
 SPEC CHECKSUMS:
   JTAppleCalendar: abb30678f42a4ef8a340a932b1dcb8c85a33dac2
   MKRingProgressView: 6a8eb219f65d1f7ac27ad1986a4f42160b2f7640
   SwiftChart: ba767a678d568a5ee22d419e146a0582865e1aff
+  SwiftyGif: 67490485c3b1fa19013d9613fab31de4629450fb
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
-PODFILE CHECKSUM: 90719d8dc242b76b1e1bd7d5d1dfff7b6fe314e5
+PODFILE CHECKSUM: 744bd36c362e0de740dd7f82b91d65adc018a62f
 
 COCOAPODS: 1.6.1

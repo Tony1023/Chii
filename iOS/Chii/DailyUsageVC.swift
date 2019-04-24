@@ -67,7 +67,7 @@ class DailyUsageVC: UIViewController {
             let percentage = Double(data.puffs) / data.average.rounded(.towardZero)
             progressArea.setupRing(toBeVisible: true, withProgress: percentage)
             puffNumber.text = String(data.puffs)
-            dailyGoal.text = "/\(Int(data.average)) puffs"
+            dailyGoal.text = "/\(Int(data.average.rounded(.towardZero))) puffs"
             puffPercent.text = String(format: "%.0f", percentage * 100)
             text.text = "% usage"
     

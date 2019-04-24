@@ -10,4 +10,5 @@ target 'Chii' do
   pod 'MKRingProgressView'
   pod 'XLPagerTabStrip', '~>9.0'
   pod 'SwiftChart'
+  pod 'SwiftyGif'
 end

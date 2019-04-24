@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F09A5C6226FB7D100E3BE6E /* launchJpg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6F09A5C5226FB7D000E3BE6E /* launchJpg.jpg */; };
 		6F0CF11B22630A9D00BB6632 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F0CF11A22630A9D00BB6632 /* Assets.xcassets */; };
 		6F1AFF142263F23000BC40EE /* UsageDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1AFF132263F23000BC40EE /* UsageDataModel.swift */; };
 		6F511C82225AA5E6001A5F29 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F511C81225AA5E6001A5F29 /* AppDelegate.swift */; };
@@ -17,6 +18,8 @@
 		6F64BCB222476FD900CCA117 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */; };
 		6F64BCBA224775AD00CCA117 /* DiscoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */; };
 		6F64BCC42248A27F00CCA117 /* ChiiSetupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */; };
+		6F6BD1E5226F834E005BEF1C /* LaunchAnimationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6BD1E4226F834E005BEF1C /* LaunchAnimationVC.swift */; };
+		6F6BD1E7226F862F005BEF1C /* launchGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6F6BD1E6226F862E005BEF1C /* launchGif.gif */; };
 		6F7112D2226101490040258E /* ActivityNavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7112D1226101490040258E /* ActivityNavigationVC.swift */; };
 		6F74E58622546CA7002471C0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6F74E58422546CA7002471C0 /* Model.xcdatamodeld */; };
 		6F74E5B522572204002471C0 /* DateConverterUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F74E5B422572204002471C0 /* DateConverterUtil.swift */; };
@@ -34,6 +37,7 @@
 
 /* Begin PBXFileReference section */
 		138F3CBDD5B9BF6FA0125F92 /* Pods-Chii.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chii.debug.xcconfig"; path = "Target Support Files/Pods-Chii/Pods-Chii.debug.xcconfig"; sourceTree = "<group>"; };
+		6F09A5C5226FB7D000E3BE6E /* launchJpg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = launchJpg.jpg; sourceTree = "<group>"; };
 		6F0CF11A22630A9D00BB6632 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../Assets/Assets.xcassets; sourceTree = "<group>"; };
 		6F1AFF132263F23000BC40EE /* UsageDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataModel.swift; sourceTree = "<group>"; };
 		6F511C81225AA5E6001A5F29 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -46,6 +50,8 @@
 		6F64BCB322476FD900CCA117 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverVC.swift; sourceTree = "<group>"; };
 		6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChiiSetupVC.swift; sourceTree = "<group>"; };
+		6F6BD1E4226F834E005BEF1C /* LaunchAnimationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchAnimationVC.swift; sourceTree = "<group>"; };
+		6F6BD1E6226F862E005BEF1C /* launchGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = launchGif.gif; sourceTree = "<group>"; };
 		6F7112D1226101490040258E /* ActivityNavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityNavigationVC.swift; sourceTree = "<group>"; };
 		6F74E58522546CA7002471C0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		6F74E5B422572204002471C0 /* DateConverterUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateConverterUtil.swift; sourceTree = "<group>"; };
@@ -95,7 +101,8 @@
 		6F64BCA422476FD700CCA117 /* Chii */ = {
 			isa = PBXGroup;
 			children = (
-				6F74E58422546CA7002471C0 /* Model.xcdatamodeld */,
+				6F64BCAB22476FD700CCA117 /* Main.storyboard */,
+				6F6BD1E4226F834E005BEF1C /* LaunchAnimationVC.swift */,
 				6F511C81225AA5E6001A5F29 /* AppDelegate.swift */,
 				6F7112D1226101490040258E /* ActivityNavigationVC.swift */,
 				6F64BCA722476FD700CCA117 /* MonthlyViewVC.swift */,
@@ -103,18 +110,17 @@
 				6F7E941B224EFB03001D92C9 /* CustomCalendarCell.swift */,
 				6F511C83225ACA5C001A5F29 /* DailyUsageVC.swift */,
 				6F64BCA922476FD700CCA117 /* SettingsVC.swift */,
-				6F64BCAB22476FD700CCA117 /* Main.storyboard */,
 				6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */,
 				6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */,
-				6F1AFF132263F23000BC40EE /* UsageDataModel.swift */,
 				6F8721482266FA5800916CBF /* DailyProgressView.swift */,
 				6F87217022698E3D00916CBF /* EmbeddedChartsVC.swift */,
 				6FBBC355226C3BFB0089E848 /* TabChartsVC.swift */,
 				6F8721722269986500916CBF /* WeekTabVC.swift */,
 				6F8D16E02269A83E0056153C /* MonthTabVC.swift */,
 				6F8D16DF2269A83E0056153C /* YearTabVC.swift */,
-				6F74E5B422572204002471C0 /* DateConverterUtil.swift */,
 				6F87214A2267146900916CBF /* Protocols.swift */,
+				6F74E5B422572204002471C0 /* DateConverterUtil.swift */,
+				6F1AFF132263F23000BC40EE /* UsageDataModel.swift */,
 				6F64BCC02248545700CCA117 /* Supports */,
 			);
 			path = Chii;
@@ -123,6 +129,9 @@
 		6F64BCC02248545700CCA117 /* Supports */ = {
 			isa = PBXGroup;
 			children = (
+				6F6BD1E6226F862E005BEF1C /* launchGif.gif */,
+				6F09A5C5226FB7D000E3BE6E /* launchJpg.jpg */,
+				6F74E58422546CA7002471C0 /* Model.xcdatamodeld */,
 				6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */,
 				6F64BCB322476FD900CCA117 /* Info.plist */,
 				6F0CF11A22630A9D00BB6632 /* Assets.xcassets */,
@@ -210,7 +219,9 @@
 			files = (
 				6F0CF11B22630A9D00BB6632 /* Assets.xcassets in Resources */,
 				6F64BCB222476FD900CCA117 /* LaunchScreen.storyboard in Resources */,
+				6F09A5C6226FB7D100E3BE6E /* launchJpg.jpg in Resources */,
 				6F64BCAD22476FD700CCA117 /* Main.storyboard in Resources */,
+				6F6BD1E7226F862F005BEF1C /* launchGif.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +238,7 @@
 				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/MKRingProgressView/MKRingProgressView.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftChart/SwiftChart.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework",
 				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -234,6 +246,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKRingProgressView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftChart.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyGif.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,6 +294,7 @@
 				6F7E941C224EFB03001D92C9 /* CustomCalendarCell.swift in Sources */,
 				6F8D16E12269A83F0056153C /* YearTabVC.swift in Sources */,
 				6F64BCA822476FD700CCA117 /* MonthlyViewVC.swift in Sources */,
+				6F6BD1E5226F834E005BEF1C /* LaunchAnimationVC.swift in Sources */,
 				6F511C82225AA5E6001A5F29 /* AppDelegate.swift in Sources */,
 				6F87214B2267146900916CBF /* Protocols.swift in Sources */,
 				6F87217122698E3D00916CBF /* EmbeddedChartsVC.swift in Sources */,

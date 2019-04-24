@@ -25,7 +25,6 @@ class SettingsVC: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("Appeared")
     }
 
 

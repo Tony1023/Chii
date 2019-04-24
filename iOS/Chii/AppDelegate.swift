@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _bluetoothManager.delegate = self
         removeData()
         preLoadData()
-        fetchUsageData()
         return true
     }
     
@@ -74,8 +73,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if i >= 14 {
                     runningSum -= dataArray[i - 14].puffs
                 }
-                dataArray[i].average = Double(runningSum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
-                if Double(dataArray[i].puffs) < dataArray[i].average {
+                if i == 0 {
+                    dataArray[0].average = Double(dataArray[0].puffs)
+                }
+                if i < dataArray.count - 1 {
+                    dataArray[i+1].average = Double(runningSum) / ((i + 1) >= 14 ? 14.0: Double(i + 1))
+                }
+                if Double(dataArray[i].puffs) <= dataArray[i].average {
                     runningStreak += 1
                 } else {
                     runningStreak = 0
@@ -145,6 +149,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             lowerLimit += 0.04
         }
         saveContext()
+        fetchUsageData()
+        
+        let today = DateConverter.convert2UTC(from: Date())
+        guard let usage = _usageDataModel.dailyUsage[DateConverter.convert2UTC(from: Date())] else { return }
+        let cap = usage.average.rounded(.towardZero)
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DailyUsage")
+        let predicate = NSPredicate(format: "date = %@", today as NSDate)
+        request.returnsObjectsAsFaults = false
+        request.predicate = predicate
+        do {
+            let result = try context.fetch(request)
+            if result.count == 1 {
+                let data = result[0] as! NSManagedObject
+                data.setValue(cap, forKey: "puffs")
+            }
+            try context.save()
+        } catch {
+            debugPrint("Modifying today's data went wrong")
+        }
+        
+        fetchUsageData()
     }
 
     // Removing the previously added dummy data
@@ -289,6 +314,10 @@ extension AppDelegate: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("Characteristic discovered")
         guard let characteristics = service.characteristics else { return }
+        if let handler = completionHandler {
+            handler()
+            completionHandler = nil
+        }
         for characteristic in characteristics {
             peripheral.readValue(for: characteristic)
             peripheral.setNotifyValue(true, for: characteristic)
@@ -296,10 +325,7 @@ extension AppDelegate: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        if let handler = completionHandler {
-            handler()
-            completionHandler = nil
-        }
+
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
