@@ -164,6 +164,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="calendarView" destination="nM8-nr-jSE" id="UUp-As-ad9"/>
+                        <outlet property="chiiButton" destination="keo-nW-SWy" id="Y3M-4M-8Kg"/>
                         <outlet property="yearLabel" destination="qSd-ho-93J" id="URy-g9-QX1"/>
                     </connections>
                 </viewController>
@@ -179,17 +180,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZjP-DD-eXL">
-                                <rect key="frame" x="128" y="273.5" width="64" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="settings.png" translatesAutoresizingMaskIntoConstraints="NO" id="b5c-H6-iSD">
+                                <rect key="frame" x="0.0" y="64" width="320" height="411"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="ZjP-DD-eXL" firstAttribute="centerY" secondItem="MEb-8K-1gg" secondAttribute="centerY" id="Vpt-YG-B2X"/>
-                            <constraint firstItem="ZjP-DD-eXL" firstAttribute="centerX" secondItem="MEb-8K-1gg" secondAttribute="centerX" id="Zbp-Nx-ywa"/>
+                            <constraint firstItem="b5c-H6-iSD" firstAttribute="top" secondItem="Kx9-QL-Vpm" secondAttribute="top" id="GlO-ep-1kQ"/>
+                            <constraint firstItem="b5c-H6-iSD" firstAttribute="trailing" secondItem="Kx9-QL-Vpm" secondAttribute="trailing" id="MMe-yL-bnM"/>
+                            <constraint firstItem="b5c-H6-iSD" firstAttribute="leading" secondItem="Kx9-QL-Vpm" secondAttribute="leading" id="daO-UT-ile"/>
+                            <constraint firstItem="b5c-H6-iSD" firstAttribute="bottom" secondItem="Kx9-QL-Vpm" secondAttribute="bottom" id="gkH-hT-HUZ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Kx9-QL-Vpm"/>
                     </view>
@@ -199,11 +199,6 @@
                             <color key="tintColor" red="0.45098039220000002" green="0.78823529410000004" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <segue destination="CbN-l6-9tv" kind="show" id="vvX-J4-zti"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="lDh-Me-TLx">
-                            <connections>
-                                <segue destination="mIg-50-qnD" kind="presentation" identifier="ToChiiSetup" id="5KJ-Nd-Rwd"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -231,7 +226,7 @@
             </objects>
             <point key="canvasLocation" x="302" y="1105"/>
         </scene>
-        <!--View Controller-->
+        <!--Community-->
         <scene sceneID="GBO-AT-oQx">
             <objects>
                 <viewController id="kVc-j4-cwh" sceneMemberID="viewController">
@@ -239,31 +234,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Browse your community" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuW-mT-yCO">
-                                <rect key="frame" x="68" y="273.5" width="184" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView verifyAmbiguity="off" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="community.png" translatesAutoresizingMaskIntoConstraints="NO" id="0k6-GB-rrD">
+                                <rect key="frame" x="0.0" y="-135" width="320" height="838"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="IuW-mT-yCO" firstAttribute="centerX" secondItem="pkt-YW-zTF" secondAttribute="centerX" id="5Fb-wJ-EZe"/>
-                            <constraint firstItem="IuW-mT-yCO" firstAttribute="centerY" secondItem="pkt-YW-zTF" secondAttribute="centerY" id="ZrB-n0-jyt"/>
+                            <constraint firstItem="0k6-GB-rrD" firstAttribute="width" secondItem="iga-so-kKC" secondAttribute="width" id="TMQ-jm-Xut"/>
+                            <constraint firstItem="0k6-GB-rrD" firstAttribute="centerX" secondItem="pkt-YW-zTF" secondAttribute="centerX" id="Y43-8d-R3M"/>
+                            <constraint firstItem="0k6-GB-rrD" firstAttribute="centerY" secondItem="pkt-YW-zTF" secondAttribute="centerY" id="t5j-eD-TpP"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="iga-so-kKC"/>
                     </view>
-                    <navigationItem key="navigationItem" id="HQu-cI-oa1">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="1Ca-HR-BO0">
-                            <connections>
-                                <segue destination="mIg-50-qnD" kind="presentation" identifier="ToChiiSetup" id="xVZ-Ds-uRT"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Community" id="HQu-cI-oa1"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8l1-3J-O7X" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1089" y="1105"/>
+            <point key="canvasLocation" x="1087.5" y="1104.9295774647887"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -294,13 +281,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="548" translatesAutoresizingMaskIntoConstraints="NO" id="Gd7-FG-ACa">
-                                <rect key="frame" x="0.0" y="10" width="320" height="548"/>
+                                <rect key="frame" x="-45" y="10" width="320" height="548"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Gd7-FG-ACa" firstAttribute="centerY" secondItem="PQJ-VO-gTW" secondAttribute="centerY" id="JDv-bm-EHV"/>
-                            <constraint firstItem="Gd7-FG-ACa" firstAttribute="centerX" secondItem="PQJ-VO-gTW" secondAttribute="centerX" id="LXS-KG-nQH"/>
+                            <constraint firstItem="Gd7-FG-ACa" firstAttribute="centerX" secondItem="PQJ-VO-gTW" secondAttribute="centerX" constant="-45" id="LXS-KG-nQH"/>
                             <constraint firstItem="Gd7-FG-ACa" firstAttribute="height" secondItem="a3j-oR-rmW" secondAttribute="height" id="sIz-vK-qSR"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a3j-oR-rmW"/>
@@ -575,6 +562,7 @@
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1500"/>
                     <connections>
+                        <outlet property="chiiButton" destination="c75-we-erx" id="OKJ-d7-Bbm"/>
                         <outlet property="dailyGoal" destination="EN7-IG-YS8" id="H4o-b5-HB6"/>
                         <outlet property="dayCountLabel" destination="ebg-Dj-5g5" id="OTx-wv-xBM"/>
                         <outlet property="noDataLabel" destination="VCo-Wf-Zfe" id="p8b-xp-MfZ"/>
@@ -841,6 +829,8 @@
         <image name="ActivityBarIcon" width="31" height="21"/>
         <image name="CommunityBarIcon" width="31" height="23"/>
         <image name="SettingsBarIcon" width="31" height="28"/>
+        <image name="community.png" width="894" height="838"/>
+        <image name="settings.png" width="543" height="909"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="gb8-cn-4K9"/>

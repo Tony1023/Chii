@@ -65,6 +65,7 @@ class ChiiSetupVC: UITableViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
         shared.bluetoothManager.stopScan()
     }
 

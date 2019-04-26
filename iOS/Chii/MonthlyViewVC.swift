@@ -15,6 +15,7 @@ class MonthlyViewVC: UIViewController {
     
     private let UTCFormatter = DateFormatter()
     private let monthYearFormatter = DateFormatter()
+    @IBOutlet weak var chiiButton: UIBarButtonItem!
     @IBOutlet private weak var calendarView: JTAppleCalendarView! {
         didSet {
             calendarView.minimumLineSpacing = 0
@@ -48,8 +49,13 @@ class MonthlyViewVC: UIViewController {
     }
     
     private func updateUI() {
-        needsUpdateUI = false
+        if shared.isConnected {
+            chiiButton.tintColor = .appTint
+        } else {
+            chiiButton.tintColor = .gray
+        }
         calendarView.reloadData()
+        needsUpdateUI = false
     }
 
     private func updateMonthYear(from visibleDates: DateSegmentInfo) {
@@ -61,6 +67,7 @@ class MonthlyViewVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        chiiButton.tintColor = .gray
         monthYearFormatter.dateFormat = "yyyy MMM"
         yearLabel.setTitle(monthYearFormatter.string(from: Date()), for: .normal)
         currentMonth = monthYearFormatter.string(from: Date())
