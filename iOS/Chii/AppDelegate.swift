@@ -205,9 +205,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
+        guard _bluetoothManager.state == .poweredOn else { return }
         if _chiiDevice?.state != .connected, _chiiDevice?.state != .connecting {
             if let uuid = UserDefaults.standard.string(forKey: "lastConnectedDevice") {
-                let id = UUID(uuidString: uuid)!
+                guard let id = UUID(uuidString: uuid) else { return }
                 _chiiDevice = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
                 if (!(_chiiDevice?.state == .connected || _chiiDevice?.state == .connecting)) {
                     _bluetoothManager.connect(_chiiDevice!)
@@ -271,7 +272,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        
+        if central.state == .poweredOn {
+            if _chiiDevice?.state != .connected, _chiiDevice?.state != .connecting {
+                if let uuid = UserDefaults.standard.string(forKey: "lastConnectedDevice") {
+                    let id = UUID(uuidString: uuid)!
+                    _chiiDevice = bluetoothManager.retrievePeripherals(withIdentifiers: [id])[0]
+                    if (!(_chiiDevice?.state == .connected || _chiiDevice?.state == .connecting)) {
+                        _bluetoothManager.connect(_chiiDevice!)
+                    }
+                }
+            }
+        }
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -349,4 +360,6 @@ extension AppDelegate: AppSharedResources {
     var usageData: UsageDataModel { return self._usageDataModel }
     
     var chiiDevice: CBPeripheral? { return self._chiiDevice }
+    
+    var isConnected: Bool { return _chiiDevice?.state == .connected }
 }

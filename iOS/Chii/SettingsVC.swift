@@ -12,6 +12,7 @@ class SettingsVC: UIViewController {
     
     private var needsReload = false
     
+    @IBOutlet weak var chiiButton: UIBarButtonItem!
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

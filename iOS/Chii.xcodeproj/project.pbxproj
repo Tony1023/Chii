@@ -18,6 +18,8 @@
 		6F64BCB222476FD900CCA117 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */; };
 		6F64BCBA224775AD00CCA117 /* DiscoverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */; };
 		6F64BCC42248A27F00CCA117 /* ChiiSetupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */; };
+		6F66D1CC22714220001143BB /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F66D1CB22714220001143BB /* settings.png */; };
+		6F66D1CE2271422B001143BB /* community.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F66D1CD2271422B001143BB /* community.png */; };
 		6F6BD1E5226F834E005BEF1C /* LaunchAnimationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6BD1E4226F834E005BEF1C /* LaunchAnimationVC.swift */; };
 		6F6BD1E7226F862F005BEF1C /* launchGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6F6BD1E6226F862E005BEF1C /* launchGif.gif */; };
 		6F7112D2226101490040258E /* ActivityNavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7112D1226101490040258E /* ActivityNavigationVC.swift */; };
@@ -50,6 +52,8 @@
 		6F64BCB322476FD900CCA117 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F64BCB9224775AD00CCA117 /* DiscoverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverVC.swift; sourceTree = "<group>"; };
 		6F64BCC32248A27F00CCA117 /* ChiiSetupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChiiSetupVC.swift; sourceTree = "<group>"; };
+		6F66D1CB22714220001143BB /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
+		6F66D1CD2271422B001143BB /* community.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = community.png; sourceTree = "<group>"; };
 		6F6BD1E4226F834E005BEF1C /* LaunchAnimationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchAnimationVC.swift; sourceTree = "<group>"; };
 		6F6BD1E6226F862E005BEF1C /* launchGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = launchGif.gif; sourceTree = "<group>"; };
 		6F7112D1226101490040258E /* ActivityNavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityNavigationVC.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				6F6BD1E6226F862E005BEF1C /* launchGif.gif */,
+				6F66D1CD2271422B001143BB /* community.png */,
+				6F66D1CB22714220001143BB /* settings.png */,
 				6F09A5C5226FB7D000E3BE6E /* launchJpg.jpg */,
 				6F74E58422546CA7002471C0 /* Model.xcdatamodeld */,
 				6F64BCB022476FD900CCA117 /* LaunchScreen.storyboard */,
@@ -222,6 +228,8 @@
 				6F09A5C6226FB7D100E3BE6E /* launchJpg.jpg in Resources */,
 				6F64BCAD22476FD700CCA117 /* Main.storyboard in Resources */,
 				6F6BD1E7226F862F005BEF1C /* launchGif.gif in Resources */,
+				6F66D1CE2271422B001143BB /* community.png in Resources */,
+				6F66D1CC22714220001143BB /* settings.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,16 +451,18 @@
 			baseConfigurationReference = 138F3CBDD5B9BF6FA0125F92 /* Pods-Chii.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6T98ZJNPG5;
+				DEVELOPMENT_TEAM = S44Q98376Q;
 				INFOPLIST_FILE = "$(SRCROOT)/Chii/Supports/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.usc.Team-XL.Chii";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.usc.Team-XL.Chii-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -463,16 +473,18 @@
 			baseConfigurationReference = C0149F14F263466A44073840 /* Pods-Chii.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6T98ZJNPG5;
+				DEVELOPMENT_TEAM = S44Q98376Q;
 				INFOPLIST_FILE = "$(SRCROOT)/Chii/Supports/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.usc.Team-XL.Chii";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.usc.Team-XL.Chii-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

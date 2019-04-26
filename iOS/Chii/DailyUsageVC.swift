@@ -19,6 +19,7 @@ class DailyUsageVC: UIViewController {
             weekView.minimumInteritemSpacing = 0
         }
     }
+    @IBOutlet weak var chiiButton: UIBarButtonItem!
     @IBOutlet weak var progressArea: DailyProgressView!
     @IBOutlet weak var puffNumber: UILabel!
     @IBOutlet weak var dailyGoal: UILabel!
@@ -58,6 +59,11 @@ class DailyUsageVC: UIViewController {
     }
     
     private func updateUI() {
+        if shared.isConnected {
+            chiiButton.tintColor = .appTint
+        } else {
+            chiiButton.tintColor = .gray
+        }
         if needsUpdateUI { weekView.reloadData() }
         if let data = shared.usageData.dailyUsage[date] {
             noData = false
@@ -67,17 +73,21 @@ class DailyUsageVC: UIViewController {
             let percentage = Double(data.puffs) / data.average.rounded(.towardZero)
             progressArea.setupRing(toBeVisible: true, withProgress: percentage)
             puffNumber.text = String(data.puffs)
+            let newPuff = "/\(Int(data.average.rounded(.towardZero))) puffs"
             dailyGoal.text = "/\(Int(data.average.rounded(.towardZero))) puffs"
             puffPercent.text = String(format: "%.0f", percentage * 100)
             text.text = "% usage"
     
-            if needsUpdateUI {
-                let scale: CGFloat = 42.0 / 60.0
-                self.puffNumber.transform = .identity
-                puffNumber.font = puffNumber.font.withSize(60)
-                UIView.animate(withDuration: 1.0, animations: {
-                    self.puffNumber.transform = CGAffineTransform(scaleX: scale, y: scale)
-                })
+            if dailyGoal.text != newPuff {
+                dailyGoal.text = newPuff
+                if needsUpdateUI {
+                    let scale: CGFloat = 42.0 / 60.0
+                    self.puffNumber.transform = .identity
+                    puffNumber.font = puffNumber.font.withSize(60)
+                    UIView.animate(withDuration: 1.0, animations: {
+                        self.puffNumber.transform = CGAffineTransform(scaleX: scale, y: scale)
+                    })
+                }
             }
         } else {
             noData = true
